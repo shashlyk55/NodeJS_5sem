@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        (async function fetchData(){
+            fetch('http://localhost:5000/api/name')
+            .then(
+                (data) => data.text(), 
+                (err) => console.log('Fetch error: ', err)
+            )
+            .then((data) => document.querySelector('#text').innerText = data)
+        })()
+    </script>
+</head>
+<body>
+    <h3 id="text">Тут должны быть имя и фамилия</h3>
+</body>
+</html>

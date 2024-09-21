@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script>
+        (function fetchData(){
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:5000/api/name')
+    
+            xhr.onload = () => {
+                if(xhr.status === 200){
+                    document.querySelector('#text').innerText = xhr.responseText;
+                } else{
+                    console.log('Error fetching data')
+                }
+            }
+            xhr.send();
+        })()
+    </script>
+</head>
+<body>
+    <h3 id="text">Тут должны быть имя и фамилия</h3>
+</body>
+</html>
