@@ -16,7 +16,7 @@
     let end
 
     for(let i = 1; i <= 20; i++){
-        fetch(`/fact?k=${i}`)
+        fetch(`/nextTickFact?k=${i}`)
         .then((data) => data.json())
         .then((data) => {
             end = performance.now()             

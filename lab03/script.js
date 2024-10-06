@@ -46,8 +46,37 @@ function fact(n){
     else
         return fact(n-1) * n
 }
-function fact2(n){
-    
+
+function factNextTick(n, callback){
+    let result = 1;
+
+    function computeFactorial(current) {
+        if (current <= 1) {
+            callback(null, result);
+        } else {
+            result *= current;
+            
+            process.nextTick(() => computeFactorial(current - 1));
+        }
+    }
+
+    computeFactorial(n);
+}
+
+function factSetImmediate(n, callback){
+    let result = 1
+
+    function computeFactorial(current){
+        if(current <= 1){
+            callback(null, result)
+        } else {
+            result *= current
+
+            setImmediate(() => computeFactorial(current - 1))
+        }
+    }
+
+    computeFactorial(n)
 }
 
 const server = http.createServer((req, res) => {
@@ -84,14 +113,52 @@ const server = http.createServer((req, res) => {
                     res.end(data)
                 }
             })
-        } else if(pathname === '/nextTick') {
-            
-
-
+        } else if(pathname === '/nextTickFact' && queryParams.k != null){   // task 4
+            factNextTick(queryParams.k, (err, result) => {
+                if(err){
+                    res.writeHead(500, {'Content-Type': 'text/plain'})
+                    res.end('Server error: ' + err)
+                } else {
+                    res.writeHead(200, {'Content-Type': 'text/html'})
+                    res.end(JSON.stringify({
+                        k: queryParams.k,
+                        fact: result
+                    }))
+                }
+            })
+        } else if(pathname === '/nextTick') {           
+            fs.readFile(path.join(__dirname, 'html/nextTick.html'), (err, data) => {
+                if(err){
+                    res.writeHead(500, {'Content-Type': 'text/text'})
+                    res.end('Server error')
+                } else {
+                    res.writeHead(200, {'Content-Type': 'text/html'})
+                    res.end(data)
+                }
+            })
+        } else if(pathname === '/setImmediateFact' && queryParams.k != null){   // task 5
+            factSetImmediate(queryParams.k, (err, result) => {
+                if(err){
+                    res.writeHead(500, {'Content-Type': 'text/plain'})
+                    res.end('Server error: ' + err)
+                } else {
+                    res.writeHead(200, {'Content-Type': 'text/html'})
+                    res.end(JSON.stringify({
+                        k: queryParams.k,
+                        fact: result
+                    }))
+                }
+            })
         } else if(pathname === '/setImmediate'){
-
-
-
+            fs.readFile(path.join(__dirname, 'html/setImmediate.html'), (err, data) => {
+                if(err){
+                    res.writeHead(500, {'Content-Type': 'text/text'})
+                    res.end('Server error')
+                } else {
+                    res.writeHead(200, {'Content-Type': 'text/html'})
+                    res.end(data)
+                }
+            })
         }
         else {
             res.writeHead(500, {'Content-Type': 'text/plain'})
@@ -101,8 +168,4 @@ const server = http.createServer((req, res) => {
 )
 
 const PORT = 5000;
-server.listen(PORT,() => {
-    console.log(`Server running on localhost:${PORT}`)
-})
-
-
+server.listen(PORT,() => {console.log(`Server running on localhost:${PORT}`)})
