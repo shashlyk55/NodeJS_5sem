@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <!--<div>
+            <label for="">Sender: </label>
+            <input type="text" id="sender" value="wiyorep191@craftapk.com"/>
+        </div>
+        <div>
+            <label for="">Recipient: </label>
+            <input type="text" id="recipient" value="rajavil872@adambra.com"/>
+        </div>-->
+        <div>
+            <label for="">Message: </label>
+            <input type="text" id="message"/>
+        </div>
+        <div id="send_btn_div">
+            <button onclick="SendMsg()">Send</button>
+        </div>
+    </div>
+</body>
+<script>
+    function SendMsg(){
+        console.log('Send message')
+        fetch('http://localhost:5000/send', 
+        {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'text/text',
+            },
+            body: JSON.stringify({
+                message: message.value
+            }),
+        })
+    }
+    
+
+
+</script>
+</html>

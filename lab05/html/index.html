@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="get_result"></div>
+    <button onclick="Get()">GET</button>
+    <script>
+        function Get(){
+            console.log('GET')
+            fetch('http://localhost:5000/api/db',
+                {
+                    method: 'GET',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }
+            )
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                console.log(`data: ${data}`)
+                get_result.innerHTML = ''
+                data.forEach(el => {
+                    get_result.innerHTML += (el.id + ' ' + el.name + ' ' + el.bday + '<br/>')
+                });
+            })
+        }
+    </script>
+    <div id="form">
+        <div class="row">
+            <label class="col-2">ID</label>
+            <input type="number" class="col-3" id="id" min="0"/>
+        </div>
+        <div class="row">
+            <label class="col-2">Name</label>
+            <input type="text" class="col-3" id="userName"/>
+        </div>
+        <div class="row">
+            <label class="col-2">BDay</label>
+            <input type="date" class="col-3" id="bday"/>
+        </div>
+        <div class="row">
+            <button class="col-2" onclick="Post()">POST</button>
+            <button class="col-2" onclick="Put()">PUT</button>
+            <button class="col-2" onclick="Delete()">DELETE</button>
+            <button onclick="GetStat()">Stat</button>
+        </div>
+        <div>
+            <p id="stat">Stat:<br></p>
+        </div>
+    </div>
+
+    <script>
+        function Post(){
+            console.log('POST')
+            fetch('http://localhost:5000/api/db',
+                {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: id.value, name: userName.value, bday: bday.value
+                    })
+                }
+            )
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                console.log(`POST.data: ${data}`)
+                Get()
+            })
+        }
+
+        function Put(){
+            console.log('PUT')
+            fetch('http://localhost:5000/api/db',
+                {
+                    method: 'PUT',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: id.value, name: userName.value, bday: bday.value
+                    })
+                }
+            )
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                console.log(`POST.data: ${data}`)
+                Get()
+            })
+        }
+
+        function Delete(){
+            console.log('DELETE')
+            console.log(id.value)
+            fetch(`http://localhost:5000/api/db?id=${id.value}`, 
+            {
+                method: 'DELETE'
+            }).then(() => Get())
+        }
+
+        function GetStat(){
+            console.log('Get stat')
+            fetch(`http://localhost:5000/api/ss`,
+            {
+                method: 'GET'
+            })
+            .then((response) => {
+                console.log(response)
+                return response.json()
+            })
+            .then((stat) => {
+                console.log(stat)
+                document.querySelector('#stat').innerHTML += `Start: ${stat.start ? stat.start : '-'}. Finish: ${stat.finish ? stat.finish : '-'}. Requests: ${stat.request}. Commits: ${stat.commit}<br>`
+            })
+        }
+    </script>
+</body>
+</html>
