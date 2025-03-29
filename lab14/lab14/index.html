@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lab-14</title>
+  </head>
+  <style>
+    #container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    #container > div {
+      width: 25%;
+    }
+  </style>
+  <body>
+    <div id="container">
+      <div>
+        <h2>GET api/pulpits</h2>
+        <button id="load-pulpits" onclick="{get()}">load</button>
+        <div id="pulpit-list"></div>
+      </div>
+
+      <div>
+        <h2>Добавить кафедру</h2>
+        <div>
+          <div class="form-group">
+            <label for="pulpit">Код кафедры:</label>
+            <input type="text" id="pulpit" required />
+          </div>
+          <div class="form-group">
+            <label for="pulpitName">Название кафедры:</label>
+            <input type="text" id="pulpitName" required />
+          </div>
+          <div class="form-group">
+            <label for="faculty">Факультет:</label>
+            <input type="text" id="faculty" required />
+          </div>
+          <button id="add-pulpit" onclick="{post()}">Добавить кафедру</button>
+        </div>
+      </div>
+
+      <div>
+        <h2>Редактировать кафедру</h2>
+        <div>
+          <div class="form-group">
+            <label for="editPulpit">Код кафедры для редактирования:</label>
+            <input type="text" id="editPulpit" required />
+          </div>
+          <div class="form-group">
+            <label for="editPulpitName">Новое название кафедры:</label>
+            <input type="text" id="editPulpitName" required />
+          </div>
+          <div class="form-group">
+            <label for="editFaculty">Новый факультет:</label>
+            <input type="text" id="editFaculty" required />
+          </div>
+          <button id="update-pulpit" onclick="{put()}">Обновить кафедру</button>
+        </div>
+      </div>
+
+      <div>
+        <h2>Удалить кафедру</h2>
+        <div>
+          <div class="form-group">
+            <label for="deletePulpit">Код кафедры для удаления:</label>
+            <input type="text" id="deletePulpit" required />
+          </div>
+          <button id="delete-pulpit" onclick="{del()}">Удалить кафедру</button>
+        </div>
+      </div>
+
+    </div>  
+    
+  </body>
+  <script>
+    async function get() {
+      console.log('get');
+      
+      try {
+        fetch('http://localhost:4000/api/pulpits', {
+          method: 'GET',
+          mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("response not ok");
+          }
+          return response.json()
+        })
+        .then((data) => {
+            console.log(`data: ${data}`)
+            displayPulpits(data);
+        });
+      } catch (error) {
+        console.error("error:", error);
+        document.getElementById("pulpit-list").innerHTML = error.toString();
+      }
+    }
+
+    function displayPulpits(pulpits) {
+      const listElement = document.getElementById("pulpit-list");
+      listElement.innerHTML = "";
+
+      if (pulpits.length === 0) {
+        listElement.innerHTML = "<p>no pulpits</p>";
+        return;
+      }
+
+      pulpits.forEach((pulpit) => {
+        const item = document.createElement("div");
+        item.className = "pulpit-item";
+        item.innerHTML = `<strong>${pulpit.PULPIT_NAME}</strong><br>code: ${pulpit.PULPIT}<br>faculty: ${pulpit.FACULTY}<br>`;
+        listElement.appendChild(item);
+      });
+    }
+
+    async function post() {
+      console.log('post');
+
+      const pulpit = document.getElementById("pulpit").value;
+      const pulpitName = document.getElementById("pulpitName").value;
+      const faculty = document.getElementById("faculty").value;
+
+      const newPulpit = { pulpit, pulpitName, faculty };
+
+      try {
+        const response = await fetch("/api/pulpits", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newPulpit),
+        });
+
+        if (!response.ok) {
+          throw new Error("response not ok");
+        }
+
+        const result = await response.json();
+
+        document.getElementById("pulpit").value = "";
+        document.getElementById("pulpitName").value = "";
+        document.getElementById("faculty").value = "";
+      } catch (error) {
+        console.error("error:", error);
+        alert("adding pulpit error");
+      }
+    }
+
+    async function put() {
+      console.log('put');
+
+      const pulpit = document.getElementById("editPulpit").value;
+      const pulpitName = document.getElementById("editPulpitName").value;
+      const faculty = document.getElementById("editFaculty").value;
+
+      const updatedPulpit = { pulpit, pulpitName, faculty };
+
+      try {
+        const response = await fetch("/api/pulpits", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedPulpit),
+        });
+
+        if (!response.ok) {
+          throw new Error("response not ok");
+        }
+
+        const result = await response.json();
+        document.getElementById("editPulpit").value = "";
+        document.getElementById("editPulpitName").value = "";
+        document.getElementById("editFaculty").value = "";
+      } catch (error) {
+        console.error("error:", error);
+      }
+    }
+
+    async function del() {
+      console.log('delete');
+      const pulpit = document.getElementById("deletePulpit").value;
+
+      try {
+        const response = await fetch(`/api/pulpits/${pulpit}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("response not ok");
+        }
+
+        const result = await response.json();
+        document.getElementById("deletePulpit").value = "";
+
+      } catch (error) {
+        console.error("error:", error);
+      }
+    }
+  </script>
+</html>
