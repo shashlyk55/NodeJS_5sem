@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js"></script>
+    <style>
+        #container {
+            display: flex;
+            flex-direction: column;
+            
+        }
+        a {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <img src="/image.png" alt="">
+        <video controls>
+            <source src="/video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <a href="/document.docx">msword</a>
+        <a href="/page.html">html</a>
+        
+        <div id="jsonDiv"></div>
+        <div id="xmlDiv"></div>
+    </div>
+</body>
+
+<script>
+    fetch('/info.json')
+    .then((data) => data.json())
+    .then((data) => {
+        console.log(data)
+        collection = ''
+        data.collection.forEach(el => collection += `Model: ${el.model} Color: ${el.color}<br>`)
+        jsonDiv.innerHTML += `id: ${data.id}<br>Collection: <br>${collection}`
+    })
+    
+    fetch('/info.xml')
+    .then((data) => data.text())
+    .then((data) => {
+        console.log(data);
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data, "text/xml");
+
+        const id = xmlDoc.getElementsByTagName("id")[0].textContent;
+
+        const objects = xmlDoc.getElementsByTagName("object");
+
+        let collectionHTML = `id: ${id}<br>Collection:<br>`;
+        for (let i = 0; i < objects.length; i++) {
+            const model = objects[i].getElementsByTagName("model")[0].textContent;
+            const color = objects[i].getElementsByTagName("color")[0].textContent;
+
+            collectionHTML += `Model: ${model}, Color: ${color}<br>`;
+        }
+        xmlDiv.innerHTML = collectionHTML;   
+    })
+</script>
+</html>

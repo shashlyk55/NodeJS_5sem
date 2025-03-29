@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <label for="">file name:</label>
+    <input type="text" id="filename">
+    <button onclick="getData()">get</button>
+    <div id="container"></div>    
+</body>
+<script>    
+    const getData = () => (fetch(`http://localhost:5000/files/${filename.value}`)
+    .then((response) => response.text())
+    .then((data) => container.innerHTML = `<p>${data}</p>`))
+</script>
+</html>

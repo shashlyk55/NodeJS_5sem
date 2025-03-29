@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body *{
+            margin: 4px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="doGet()">doGet</button><br>
+    <button onclick="doSum()">doSum</button><br>
+    <button onclick="doPost()">doPost</button><br>
+    <button onclick="doJsonPost()">doJsonPost</button><br>
+    <button onclick="doXmlPost()">doXmlPost</button><br>
+    <form action="/doTxtPost" method="POST" enctype="multipart/form-data">
+        <input type="file" name="" id="file_input">
+        <input type="submit" value="sendTxt">
+    </form>
+</body>
+<script>
+    // task 01
+    function doGet(){
+        console.log('doGet')
+        fetch('http://localhost:5000/doGet')
+            .then((response) => {
+                console.log(response.status)
+                console.log(response.statusText)
+                return response.json()
+            })
+            .then((json) => {
+                console.log(json.serverIp)
+                console.log(json.serverPort)
+                console.log(json)
+            })
+    }
+    // task 02
+    function doSum(){
+        console.log('doSum')
+        fetch('http://localhost:5000/doSum?x=8&y=3')
+            .then((response) => response.text())
+            .then((data) => console.log(data))
+    }
+    // task 03
+    function doPost(){
+        console.log('doPost')
+        let obj = {
+            x: 3,
+            y: 4,
+            s: 8
+        }
+        fetch('http://localhost:5000/doPost',
+            {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(obj)
+            })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+    }
+    // task 04
+    function doJsonPost(){
+        console.log('doJsonPost')
+        let obj = {
+            __comment: "Request lab 8, task 10",
+            x: 1,
+            y: 2,
+            s: "message",
+            m: ["a","b","c","d"],
+            o: {"surname": "Slesarev","name": "Ivan"}
+        }
+        fetch('http://localhost:5000/doJsonPost',
+            {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(obj)
+            })
+            .then((response) => {
+                console.log(response.status)
+                return response.json()
+            })
+            .then((data) => console.log(data))
+    }
+    // task 05
+    function doXmlPost() {
+        console.log('doXmlPost')
+        let obj = `<request id="28">
+            <x value="1"/>
+            <x value="4"/>
+            <x value="2"/>
+            <m value="a"/>
+            <m value="r"/>
+        </request>`
+        fetch('http://localhost:5000/doXmlPost',
+            {
+                method: 'POST',
+                headers: {'Content-Type': 'application/xml'},
+                body: obj
+            })
+            .then((response) => {
+                console.log(response)
+                return response.text()
+            })
+            .then((data) => console.log(data))
+    }
+</script>
+</html>

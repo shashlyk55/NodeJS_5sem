@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "collection":[
+        {
+            "model": "viper",
+            "color": "green"
+        },
+        {
+            "model": "rex",
+            "color": "blue"
+        }
+    ]
+    
+}

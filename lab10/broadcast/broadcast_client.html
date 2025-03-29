@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" name="" id="message">
+    <button id="send_btn">send</button>
+    <p>messages:</p>
+    <p id="messages"></p>
+</body>
+<script>
+    const sendBtn = document.getElementById('send_btn')
+    const inputMsg = document.getElementById('message')
+    const messages = document.getElementById('messages')
+    const websocket = new WebSocket('ws://localhost:5000/wsserver')
+
+    websocket.onmessage = (event) => {
+        event.data.text().then((data) => messages.innerText += `${data}\n`)
+    }
+
+    websocket.onopen = (event) => {
+        messages.innerText += 'client connected\n'
+    }
+
+    websocket.onclose = (event) => {
+        messages.innerText += 'client disconnected\n'
+    }
+
+    sendBtn.addEventListener('click', () => {
+        websocket.send(inputMsg.value)
+        console.log(`send message: ${inputMsg.value}`);
+        
+        messages.innerText += `Send: ${inputMsg.value}\n`
+        inputMsg.value = ''
+    })
+</script>
+</html>

@@ -5,8 +5,8 @@ const sendmail = require('sendmail')()
 function send(message){
     sendmail(
         {
-            to: 'rajavil872@adambra.com',
-            from: 'wiyorep191@craftapk.com',
+            to: 'nedajo4193@angewy.com',
+            from: 'hovoba8314@abaot.com',
             subject: message
         },
         (err) => {
