@@ -1,0 +1,18 @@
+type Faculty {
+      faculty: String
+      faculty_name: String
+    }
+  
+    type Query {
+      getFaculties(faculty: String): [Faculty]
+    }
+  
+    type Mutation {
+      setFaculty(faculty: FacultyInput): Faculty
+      delFaculty(faculty: String!): Boolean
+    }
+  
+    input FacultyInput {
+      faculty: String!
+      faculty_name: String!
+    }

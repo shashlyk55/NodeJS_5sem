@@ -1,0 +1,38 @@
+schema{
+  query: Query
+  mutation: Mutation
+}
+
+type Faculty {
+  faculty: String!
+  faculty_name: String!
+}
+
+type Pulpit {
+  pulpit: String!
+  pulpit_name: String!
+  faculty: String!
+}
+
+type Query {
+  getFaculties(faculty: String): [Faculty]
+  getPulpits(faculty: String, pulpit: String): [Pulpit]
+}
+
+type Mutation {
+  setFaculty(pulpit: FacultyInput!): Faculty
+  setPulpit(pulpit: PulpitInput!): Pulpit
+  delFaculty(faculty: String!): Boolean
+  delPulpit(pulpit: String!): Boolean
+}
+
+input PulpitInput {
+  pulpit: String!
+  pulpit_name: String!
+  faculty: String!
+}
+
+input FacultyInput {
+  faculty: String!
+  faculty_name: String!
+}
